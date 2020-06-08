@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-version '1.0-SNAPSHOT'
-
 repositories {
     mavenCentral()
     jcenter()
@@ -18,4 +16,13 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation "org.mockito:mockito-core:2.+"
     testImplementation 'org.assertj:assertj-core:3.13.2'
+}
+
+task customFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'Main',
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
