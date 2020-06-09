@@ -36,7 +36,16 @@ public class App {
         }
     }
 
-    public String writeFile(String fileUrl, String text) {
+    public List<String> writeFiles(String url, String name, String text) {
+        var originUrlList = findFiles(url, name);
+        if (!originUrlList.isEmpty()) {
+            return originUrlList.stream().map(origin -> writeFile(origin, text)).collect(toList());
+        }
+        out.println(format("Can't find file\n%s", name));
+        return emptyList();
+    }
+
+    protected String writeFile(String fileUrl, String text) {
         var file = new File(fileUrl);
         String copyFileUrl = "";
 
@@ -89,7 +98,7 @@ public class App {
     protected List<String> findFiles(String url, String name) {
         File[] files = new File(url).listFiles((dir, fileName) -> fileName.contains(name));
         return files != null && files.length > 0
-                ? stream(files).map(File::getAbsolutePath).collect(toList())
+                ? stream(files).filter(File::isFile).map(File::getAbsolutePath).collect(toList())
                 : emptyList();
     }
 }

@@ -14,7 +14,7 @@ public class Main {
                     app.readFile(args[1]);
                     break;
                 case "write":
-                    app.writeFile(args[1], args[2]);
+                    app.writeFiles(args[1], args[2], args[3]);
                     break;
                 default:
                     System.out.println("Fin");

@@ -84,13 +84,20 @@ public class AppTest {
     }
 
     @Test
-    public void writeFile() {
-        var newFileUrl = app.writeFile("src/test/java/readWriteTest.txt", "test");
+    public void writeFiles() {
+        var newFileUrl = app.writeFiles("src/test/java/", "readWriteTest.txt", "test");
 
         assertThat(outContent.toString()).isEqualTo("test\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\n");
-        assertThat(newFileUrl.endsWith("src/test/java/readWriteTest_copy.txt")).isTrue();
+        assertThat(newFileUrl.get(0).endsWith("src/test/java/readWriteTest_copy.txt")).isTrue();
 
-        new File(newFileUrl).deleteOnExit();
+        newFileUrl.forEach(file -> new File(file).deleteOnExit());
+    }
+
+    @Test
+    public void writeFiles_noFilesFound() {
+        var newFileUrl = app.writeFiles("hop", "hey", "test");
+        assertThat(outContent.toString()).isEqualTo("Can't find file\nhey\n");
+        assertThat(newFileUrl).isEmpty();
     }
 
     @Test
